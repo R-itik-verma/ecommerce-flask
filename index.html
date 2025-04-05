@@ -1,0 +1,44 @@
+<!-- templates/index.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home - E-Commerce{% endblock %}
+
+{% block head %}
+<script>
+    async function fetchProducts() {
+        const response = await fetch('/products');
+        const products = await response.json();
+        let productList = document.getElementById("product-list");
+        productList.innerHTML = "";
+        products.forEach(p => {
+            productList.innerHTML += `<li>${p.name} - $${p.price} <button onclick="addToCart(${p.id})">Add to Cart</button></li>`;
+        });
+    }
+
+    async function addToCart(productId) {
+        await fetch('/cart', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({product_id: productId})
+        });
+        alert("Product added to cart!");
+    }
+
+    window.onload = fetchProducts;
+</script>
+{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Discover Awesome Products</h2>
+            <p>Shop the latest trends, top-rated items, and exclusive deals all in one place.</p>
+            <a href="#product-list" class="hero-btn">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Product List Section -->
+    <h2>Our Products</h2>
+    <ul id="product-list"></ul>
+{% endblock %}
